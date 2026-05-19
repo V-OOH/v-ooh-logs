@@ -12,11 +12,16 @@ public class AppSlack {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
+        // Cria a instância da classe do Slack
+        Slack slack = new Slack();
+
+        String urlWebhook = "";
+
+        // Nome do json com o texto da mensagem
         JSONObject json = new JSONObject();
+        json.put("text", "Teste");
 
-        json.put("text", "Fácil né? :shrug:");
-
-        Slack.sendMessage(json);
+        Slack.sendMessage(urlWebhook, json);
     }
 }
 

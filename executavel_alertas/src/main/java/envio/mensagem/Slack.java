@@ -14,14 +14,20 @@ import org.json.JSONObject;
 public class Slack {
 
     private static HttpClient client = HttpClient.newHttpClient();
-    private static final String URL = "INSIRA SUA URL AQUI (WEBHOOK)";
+//    private static final String URL = "INSIRA SUA URL AQUI (WEBHOOK)";
 
-    public static void sendMessage(JSONObject content) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder(
-                        URI.create(URL))
+    public static void sendMessage(String urlWebhook, JSONObject content) throws IOException, InterruptedException {
+
+        if (urlWebhook == null || urlWebhook.trim().isEmpty()) {
+            System.out.println("Erro: a URL Webhook está vazia!");
+        }
+
+        // Cria a requisição HTTP passando a URL como parâmetro
+        HttpRequest request = HttpRequest.newBuilder(URI.create(urlWebhook))
+                .header("Content-Type", "application/json") // Padrão do Slack é Content-Type
                 .header("accept", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(content.toString()))
-                .build();
+                .build(); // cria o HttpResponse
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
