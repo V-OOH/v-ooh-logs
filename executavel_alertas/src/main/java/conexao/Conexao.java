@@ -14,7 +14,7 @@ public class Conexao {
     private static final String usuario = "root";
 
     // Senha
-    private static final String senha = "24112002";
+    private static final String senha = "";
 
     // Conectar
     public static Connection conectar() throws SQLException {
