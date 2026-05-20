@@ -49,6 +49,12 @@ public class EmpresaDAO {
                          empresa.setNomeEmpresa(rs.getString("nome_empresa"));
                          // Pega a url do webhook da empresa
                          empresa.setUrlWEBHOOK(rs.getString("urlWEBHOOK"));
+                         // Pega a url do Jira
+                         empresa.setJiraEmail(rs.getString("jiraUrl"));
+                         // Pega o email do Jira
+                         empresa.setJiraEmail(rs.getString("jiraEmail"));
+                         // Pega o token do Jira
+                         empresa.setJiraToken(rs.getString("jiraToken"));
 
                          return empresa;
                      }

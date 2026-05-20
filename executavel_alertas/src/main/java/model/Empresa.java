@@ -17,7 +17,10 @@ public class Empresa {
     private Integer id; // Id da empresa
     private String nomeEmpresa; // Nome da empresa
     private String statusEmpresa; // Status da empresa (verificar se esta Ativa ou Inativa)
-    private String urlWEBHOOK; // URL do webhook para integração dos app - Slack e Jira
+    private String urlWEBHOOK; // URL do webhook para integração dos app - Slack
+    private String jiraUrl;
+    private String jiraEmail;
+    private String jiraToken;
 
     // Construtores
     public Empresa() {
@@ -69,7 +72,30 @@ public class Empresa {
         this.urlWEBHOOK = urlWEBHOOK;
     }
 
-    // Metodo toString
+    public String getJiraUrl() {
+        return jiraUrl;
+    }
+
+    public void setJiraUrl(String jiraUrl) {
+        this.jiraUrl = jiraUrl;
+    }
+
+    public String getJiraEmail() {
+        return jiraEmail;
+    }
+
+    public void setJiraEmail(String jiraEmail) {
+        this.jiraEmail = jiraEmail;
+    }
+
+    public String getJiraToken() {
+        return jiraToken;
+    }
+
+    public void setJiraToken(String jiraToken) {
+        this.jiraToken = jiraToken;
+    }
+
     @Override
     public String toString() {
         return "Empresa{" +
@@ -77,6 +103,9 @@ public class Empresa {
                 ", nomeEmpresa='" + nomeEmpresa + '\'' +
                 ", statusEmpresa='" + statusEmpresa + '\'' +
                 ", urlWEBHOOK='" + urlWEBHOOK + '\'' +
+                ", jiraUrl='" + jiraUrl + '\'' +
+                ", jiraEmail='" + jiraEmail + '\'' +
+                ", jiraToken='" + jiraToken + '\'' +
                 '}';
     }
 }

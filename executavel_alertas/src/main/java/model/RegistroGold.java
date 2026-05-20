@@ -7,6 +7,7 @@ public class RegistroGold {
     private Integer fkDisplay;
     private Integer fkComponente;
     private Double valor;
+    private String tipo;
 
     // Getters e Setters
     public String getMac() {
@@ -39,5 +40,13 @@ public class RegistroGold {
 
     public void setValor(Double valor) {
         this.valor = valor;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
     }
 }

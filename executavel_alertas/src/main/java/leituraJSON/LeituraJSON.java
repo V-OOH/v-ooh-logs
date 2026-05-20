@@ -32,6 +32,7 @@ public class LeituraJSON {
                 registro.setFkDisplay(json.getInt("fk_display"));
                 registro.setFkComponente(json.getInt("fk_componente"));
                 registro.setValor(json.getDouble("valor"));
+                registro.setTipo(json.getString("tipo"));
 
                 // Adicionando registros na lista
                 registros.add(registro);
