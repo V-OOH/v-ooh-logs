@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Slack {
 
-    private static final Dotenv dotenv = Dotenv.configure().directory("vooh.relatorios").filename(".env.dev").ignoreIfMissing().load();
+    private static final Dotenv dotenv = Dotenv.configure().filename(".env.dev").ignoreIfMissing().load();
     private static final String WEBHOOK_URL = dotenv.get("SLACK_BASE_URL");
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 

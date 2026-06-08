@@ -4,9 +4,10 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class S3Connection {
 
-    private static final Dotenv dotenv = Dotenv.configure().directory("vooh.relatorios").filename(".env.dev").ignoreIfMissing().load();
+    private static final Dotenv dotenv = Dotenv.configure().filename(".env.dev").ignoreIfMissing().load();
 
     private S3Connection() {}
+
 
     public static String getACCESS_KEY_ID()    { return dotenv.get("AWS_ACCESS_KEY_ID"); }
     public static String getSECRET_ACCESS_KEY() { return dotenv.get("AWS_SECRET_ACCESS_KEY"); }

@@ -8,7 +8,7 @@ import java.util.Base64;
 
 public class Jira {
 
-    private static final Dotenv dotenv = Dotenv.configure().directory("vooh.relatorios").filename(".env.dev").ignoreIfMissing().load();
+    private static final Dotenv dotenv = Dotenv.configure().filename(".env.dev").ignoreIfMissing().load();
 
     private static final String BASE_URL  = dotenv.get("JIRA_BASE_URL");
     private static final String EMAIL     = dotenv.get("JIRA_EMAIL");
