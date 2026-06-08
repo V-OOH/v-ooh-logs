@@ -6,9 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="slack-integration" />
-        <module name="example-jira-integration" />
+        <module name="executavel_alertas" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="example-jira-integration" target="21" />
+      <module name="slack-integration" target="21" />
+    </bytecodeTargetLevel>
   </component>
 </project>
