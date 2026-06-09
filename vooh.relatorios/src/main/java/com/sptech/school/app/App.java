@@ -1,5 +1,6 @@
 package com.sptech.school.app;
 
+import com.sptech.school.controller.JiraController;
 import com.sptech.school.dto.AlertaDooh;
 import com.sptech.school.service.AlertaProcessorService;
 import com.sptech.school.service.PdfRelatorioService;
@@ -9,16 +10,17 @@ import com.sptech.school.util.DateUtil;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class App {
 
-    private static String getChaveAlertas() {
-        return "client/dados_dashboard_alertas_empresa_1_" + DateUtil.hojeS3() + ".json";
-    }
+    private static final String CHAVE_ALERTAS_S3 = "client/dados_dashboard_alertas_empresa_2_07_06_2026.json";
+    private static final String CHAVE_INCIDENTES_S3 = "client/dashIncidente_Empresa2.json";
     private static final long POLLING_INTERVAL_MS = Long.parseLong(
             System.getenv().getOrDefault("POLLING_INTERVAL_MS", "60000"));
 
     private static LocalDate ultimoRelatorio = null;
+    static JiraController jira = new JiraController(); // junto com o AlertaProcessorService
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println("╔══════════════════════════════════════╗");
@@ -35,15 +37,28 @@ public class App {
 
         while (true) {
             try {
-                List<AlertaDooh> alertas = S3Service.lerAlertas(getChaveAlertas());
-
+                // alertas de componentes
+                List<AlertaDooh> alertas = S3Service.lerAlertas(CHAVE_ALERTAS_S3);
                 if (!alertas.isEmpty()) {
                     System.out.printf("[App] %d alerta(s) recebido(s). Processando...%n", alertas.size());
                     boolean chamadoCriado = processor.processar(alertas);
-
                     if (chamadoCriado && !LocalDate.now().equals(ultimoRelatorio)) {
                         gerarRelatorio();
                         ultimoRelatorio = LocalDate.now();
+                    }
+                }
+
+                // incidentes de displays offline
+                List<Map<String, Object>> offline = S3Service.lerDisplaysOffline(CHAVE_INCIDENTES_S3);
+                if (!offline.isEmpty()) {
+                    System.out.printf("[App] %d display(s) novo(s) offline. Criando incidentes...%n", offline.size());
+                    for (Map<String, Object> display : offline) {
+                        try {
+                            String key = jira.criarChamadoIncidente(display);
+                            System.out.printf("[App] Incidente criado: %s — Display %s%n", key, display.get("idDisplay"));
+                        } catch (Exception e) {
+                            System.err.println("[App] Erro ao criar incidente: " + e.getMessage());
+                        }
                     }
                 }
 

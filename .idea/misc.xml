@@ -7,6 +7,7 @@
         <option value="$PROJECT_DIR$/jira-integration/pom.xml" />
         <option value="$PROJECT_DIR$/slack-integration/pom.xml" />
         <option value="$PROJECT_DIR$/executavel_alertas/pom.xml" />
+        <option value="$PROJECT_DIR$/vooh.relatorios/pom.xml" />
       </list>
     </option>
   </component>

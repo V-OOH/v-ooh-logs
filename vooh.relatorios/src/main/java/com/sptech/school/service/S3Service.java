@@ -79,6 +79,59 @@ public class S3Service {
         }
     }
 
+    public static List<AlertaDooh> lerIncidentesOffline(String chaveS3) {
+        try {
+            GetObjectRequest req = GetObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(chaveS3)
+                    .build();
+
+            ResponseBytes<GetObjectResponse> obj = client.getObjectAsBytes(req);
+            String json = obj.asUtf8String();
+
+            var root = mapper.readTree(json);
+
+            System.out.println("[DEBUG S3] JSON lido:");
+            System.out.println(root.toPrettyString());
+
+            int quantidadeOffline = root.path("kpis").path("quantidadeOffline").asInt(0);
+
+            System.out.println("[DEBUG S3] quantidadeOffline = " + quantidadeOffline);
+            System.out.println("[DEBUG S3] displaysOffline size = " + root.path("displaysOffline").size());
+            if (quantidadeOffline <= 0) {
+                return Collections.emptyList();
+            }
+
+            List<AlertaDooh> incidentes = new ArrayList<>();
+
+            for (var display : root.path("displaysOffline")) {
+                AlertaDooh alerta = new AlertaDooh();
+
+                alerta.setIdDisplay(display.path("idDisplay").asInt());
+                alerta.setMac(display.path("macAddress").asText("—"));
+                alerta.setHorario(root.path("Data").asText("") + " " + root.path("Hora").asText(""));
+                alerta.setNivel("CRITICO");
+                alerta.setComponente("Display Offline");
+                alerta.setEmpresa("TechSolutions");
+                alerta.setZona(display.path("zona").asText("—"));
+                alerta.setValor(0.0);
+                alerta.setMensagem("Display não enviou telemetria na última leitura da dashboard de incidentes.");
+
+                incidentes.add(alerta);
+            }
+
+            historicoDiario.addAll(incidentes);
+            return incidentes;
+
+        } catch (NoSuchKeyException e) {
+            System.out.println("[S3Service] Nenhuma dashboard de incidente encontrada.");
+            return Collections.emptyList();
+        } catch (Exception e) {
+            System.err.println("[S3Service] Erro ao ler incidentes offline: " + e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
     public static void uploadArquivo(String caminhoLocal, String chaveS3) {
         try {
             PutObjectRequest req = PutObjectRequest.builder().bucket(bucket).key(chaveS3).build();
@@ -86,6 +139,40 @@ public class S3Service {
             System.out.println("[S3Service] Upload concluído → " + chaveS3);
         } catch (Exception e) {
             System.err.println("[S3Service] Erro no upload: " + e.getMessage());
+        }
+    }
+
+
+    public static List<Map<String, Object>> lerDisplaysOffline(String chaveS3) {
+        try {
+            GetObjectRequest req = GetObjectRequest.builder().bucket(bucket).key(chaveS3).build();
+            ResponseBytes<GetObjectResponse> obj = client.getObjectAsBytes(req);
+            String json = obj.asUtf8String();
+
+            var root = mapper.readTree(json);
+
+            // Pega o registro mais recente (última data → última hora)
+            var ultimaData = root.fields().next().getValue();
+            var ultimaHora = ultimaData.fields().next().getValue();
+
+            int novosOffline = ultimaHora.path("novosOffline").asInt(0);
+            if (novosOffline == 0) return Collections.emptyList();
+
+            List<Map<String, Object>> displays = new ArrayList<>();
+            for (var display : ultimaHora.path("displaysOffline")) {
+                Map<String, Object> d = new HashMap<>();
+                d.put("idDisplay", display.path("idDisplay").asInt());
+                d.put("mac", display.path("mac").asText());
+                d.put("zona", display.path("zona").asText());
+                d.put("logradouro", display.path("logradouro").asText());
+                d.put("motivoOffline", display.path("motivoOffline").asText());
+                displays.add(d);
+            }
+            return displays;
+
+        } catch (Exception e) {
+            System.err.println("[S3Service] Erro ao ler incidentes: " + e.getMessage());
+            return Collections.emptyList();
         }
     }
 

@@ -8,18 +8,32 @@ import java.util.Base64;
 
 public class Jira {
 
-    private static final Dotenv dotenv = Dotenv.configure().filename(".env.dev").ignoreIfMissing().load();
+    private static final Dotenv dotenv = Dotenv.configure().directory("C:\\Users\\Guilherme\\Desktop\\vooh_relatorios_simplificado\\vooh_relatorios_simplificado\\vooh_simplificado\\vooh.relatorios").filename(".env.dev").ignoreIfMissing().load();
+
+
 
     private static final String BASE_URL  = dotenv.get("JIRA_BASE_URL");
     private static final String EMAIL     = dotenv.get("JIRA_EMAIL");
     private static final String API_TOKEN = dotenv.get("JIRA_API_TOKEN");
     private static final MediaType JSON   = MediaType.get("application/json; charset=utf-8");
 
+    static {
+        System.out.println("JIRA_BASE_URL = " + BASE_URL);
+        System.out.println("JIRA_EMAIL = " + EMAIL);
+        System.out.println("JIRA_API_TOKEN existe? " + (API_TOKEN != null));
+
+        if (BASE_URL == null) {
+            throw new IllegalStateException("JIRA_BASE_URL está null. Verifique o .env.dev");
+        }
+    }
+
     private final OkHttpClient httpClient = new OkHttpClient();
 
     private String basicAuth() {
         return "Basic " + Base64.getEncoder().encodeToString((EMAIL + ":" + API_TOKEN).getBytes());
     }
+
+
 
     public String createIssue(String projectKey, String summary, String description,
                               String issueType, String priority, String mac) throws IOException {
@@ -47,6 +61,10 @@ public class Jira {
             """,
                 projectKey, escaparJson(summary), issueType, priority, escaparJson(description)
         );
+
+        HttpUrl url = HttpUrl.parse(BASE_URL + "/rest/api/3/issue");
+
+        System.out.println("URL = " + url);
 
         Request request = new Request.Builder()
                 .url(BASE_URL + "/rest/api/3/issue")

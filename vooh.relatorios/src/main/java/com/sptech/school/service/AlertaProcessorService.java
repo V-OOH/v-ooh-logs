@@ -76,6 +76,41 @@ public class AlertaProcessorService {
         }
         return chamadoCriado;
     }
+    public boolean processarIncidentesOffline(List<AlertaDooh> incidentes) {
+        boolean chamadoCriado = false;
+
+        for (AlertaDooh incidente : incidentes) {
+            String chave = incidente.getDisplayId() + "│DISPLAY_OFFLINE";
+            EstadoAlerta estado = estadoMaquinas.computeIfAbsent(chave, k -> new EstadoAlerta());
+
+            if (estado.ultimoChamado != null) {
+                long minutos = Duration.between(estado.ultimoChamado, LocalDateTime.now()).toMinutes();
+
+                if (minutos < COOLDOWN_MINUTOS) {
+                    System.out.printf("[Processor] Display offline %s em cooldown — %d/%d min%n",
+                            incidente.getDisplayId(), minutos, COOLDOWN_MINUTOS);
+                    continue;
+                }
+
+                estado.ultimoChamado = null;
+            }
+
+            try {
+                String jiraKey = jira.criarChamadoDisplayOffline(incidente);
+
+                estado.ultimoChamado = LocalDateTime.now();
+                chamadoCriado = true;
+
+                System.out.printf("[Processor] Chamado de display offline criado: %s — Display %s%n",
+                        jiraKey, incidente.getDisplayId());
+
+            } catch (Exception e) {
+                System.err.println("[Processor] Erro ao criar chamado de display offline: " + e.getMessage());
+            }
+        }
+
+        return chamadoCriado;
+    }
 
     private static class EstadoAlerta {
         int           contagemViolacoes = 0;
