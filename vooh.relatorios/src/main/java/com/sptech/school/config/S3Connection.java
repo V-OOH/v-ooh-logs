@@ -4,7 +4,9 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class S3Connection {
 
-    private static final Dotenv dotenv = Dotenv.configure().filename(".env.dev").ignoreIfMissing().load();
+    private static final Dotenv dotenv = Dotenv.configure()
+            .ignoreIfMissing()
+            .load();
 
     private S3Connection() {}
 

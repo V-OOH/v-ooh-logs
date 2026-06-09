@@ -8,7 +8,7 @@ import java.util.Base64;
 
 public class Jira {
 
-    private static final Dotenv dotenv = Dotenv.configure().directory("C:\\Users\\Guilherme\\Desktop\\vooh_relatorios_simplificado\\vooh_relatorios_simplificado\\vooh_simplificado\\vooh.relatorios").filename(".env.dev").ignoreIfMissing().load();
+    private static final Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
 
 
