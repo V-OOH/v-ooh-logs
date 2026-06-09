@@ -44,16 +44,19 @@ public class JiraController {
         );
 
         String descricao = String.format(
-                "Foi detectado um display offline na dashboard de incidentes.\n\n" +
-                        "Empresa Responsável: %s\n" +
-                        "Zona: %s\n" +
-                        "ID do Display: %s\n" +
-                        "MAC Address: %s\n" +
-                        "Data/Hora da Detecção: %s\n" +
-                        "Criticidade: %s\n\n" +
-                        "Diagnóstico: %s\n\n" +
-                        "Ação recomendada:\n" +
-                        "Verificar energia, conexão de rede e envio de telemetria do display.",
+                """
+                        Foi detectado um display offline na dashboard de incidentes.
+                        Empresa Responsável: %s
+                        Zona: %s
+                        ID do Display: %s
+                        MAC Address: %s
+                        Data/Hora da Detecção: %s
+                        Criticidade: %s
+                        
+                        Diagnóstico: %s
+                        
+                        Ação recomendada:
+                        Verificar energia, conexão de rede e envio de telemetria do display.""",
                 alerta.getEmpresa(),
                 alerta.getZona(),
                 alerta.getDisplayId(),
@@ -85,12 +88,13 @@ public class JiraController {
         String resumo = String.format("[INCIDENTE][OFFLINE] Display %s offline — Zona %s", idDisplay, zona);
 
         String descricao = String.format(
-                "Display offline detectado\\n" +
-                        "ID do Display: %s\\n" +
-                        "MAC Address: %s\\n" +
-                        "Zona: %s\\n" +
-                        "Logradouro: %s\\n" +
-                        "Motivo: %s",
+                """
+                        Display offline detectado
+                        ID do Display: %s
+                        MAC Address: %s
+                        Zona: %s
+                        Logradouro: %s
+                        Motivo: %s""",
                 idDisplay, mac, zona, logradouro, motivo
         );
 
